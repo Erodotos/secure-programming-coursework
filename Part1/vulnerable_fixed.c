@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
         strcat(greeting, user);
         strcat(greeting, "!!\n");
 
-        printf(greeting);
+        printf("%s",greeting);
 
         FILE *file = fopen(board, "a");
         fprintf(file, "%s\n", message);

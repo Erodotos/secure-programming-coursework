@@ -1,0 +1,19 @@
+*** vulnerable.c	2022-02-27 12:13:44.057302032 +0000
+--- vulnerable_fixed.c	2022-02-27 12:08:42.880677721 +0000
+***************
+*** 23,29 ****
+          strcat(greeting, user);
+          strcat(greeting, "!!\n");
+  
+!         printf(greeting);
+  
+          FILE *file = fopen(board, "a");
+          fprintf(file, "%s\n", message);
+--- 23,29 ----
+          strcat(greeting, user);
+          strcat(greeting, "!!\n");
+  
+!         printf("%s",greeting);
+  
+          FILE *file = fopen(board, "a");
+          fprintf(file, "%s\n", message);
