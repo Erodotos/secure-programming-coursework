@@ -2563,6 +2563,9 @@ tls1_process_heartbeat(SSL *s)
 	n2s(p, payload);
 	pl = p;
 
+	if (1 + 2 + payload + 16 > s->s3->rrec.length)
+		return 0;
+
 	if (s->msg_callback)
 		s->msg_callback(0, s->version, TLS1_RT_HEARTBEAT,
 			&s->s3->rrec.data[0], s->s3->rrec.length,
