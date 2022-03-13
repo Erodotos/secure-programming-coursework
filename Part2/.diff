@@ -1,0 +1,31 @@
+*** ./sshd_config_original	2022-02-27 13:45:55.193433566 +0000
+--- /etc/ssh/sshd_config	2022-02-27 13:41:47.036789847 +0000
+***************
+*** 10,15 ****
+--- 10,18 ----
+  # possible, but leave them commented.  Uncommented options override the
+  # default value.
+  
++ AllowUsers user
++ AuthenticationMethods publickey
++ 
+  #Port 22
+  #AddressFamily any
+  #ListenAddress 0.0.0.0
+***************
+*** 68,74 ****
+  #IgnoreRhosts yes
+  
+  # To disable tunneled clear text passwords, change to no here!
+! #PasswordAuthentication yes
+  #PermitEmptyPasswords no
+  
+  # Change to no to disable s/key passwords
+--- 71,77 ----
+  #IgnoreRhosts yes
+  
+  # To disable tunneled clear text passwords, change to no here!
+! PasswordAuthentication no
+  #PermitEmptyPasswords no
+  
+  # Change to no to disable s/key passwords
