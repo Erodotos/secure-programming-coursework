@@ -54,6 +54,7 @@ function logout()
     unset($_SESSION['csrf_token']);
     unset($_SESSION['csrf_token_time']);
     unset($_SESSION['username']);
+    print_r($_SESSION);
 }
 
 function login($username, $password)
@@ -63,7 +64,9 @@ function login($username, $password)
     try {
         $db = get_db();
 
-        $check = $db->prepare("SELECT * FROM users_new WHERE username='" . $username . "'");
+
+        $check = $db->prepare("SELECT * FROM users_new WHERE username=:name");
+        $check->bindParam(':name', $username);
         $result = $check->execute();
 
         while ($row = $check->fetch()) {
@@ -104,17 +107,17 @@ function create_csrf_token()
 // validate csrf token
 function validate_csrf_token()
 {
+
     if (isset($_SESSION['csrf_token']) && isset($_POST['csrf_token'])) {
         if ($_SESSION['csrf_token'] === $_POST['csrf_token']) {
             if ($_SESSION['csrf_token_time'] < time() - 3600) {
-                unset($_SESSION['csrf_token']);
-                unset($_SESSION['csrf_time']);
-                return false;
+                logout();
+                exit("<p>Invalid CSRF token.</p>");
             }
             return true;
         }
     }
-
+    logout();
     exit("<p>Invalid CSRF token.</p>");
 }
 
@@ -168,7 +171,9 @@ function export_public_key()
     try {
         $db = get_db();
 
-        $check = $db->prepare("SELECT public_key FROM users_new WHERE username='" . $_SESSION['username'] . "'");
+        // select the public key
+        $check = $db->prepare("SELECT public_key FROM users_new WHERE username=:name");
+        $check->bindParam(':name', $_SESSION['username']);
         $result = $check->execute();
 
         while ($row = $check->fetch()) {
@@ -179,4 +184,32 @@ function export_public_key()
     } catch (PDOException $e) {
         print($e->getMessage());
     }
+}
+
+// generate digital signature
+function sign_text($data)
+{
+    // get private_key from database
+    $db = get_db();
+
+    // select the private key
+    $check = $db->prepare("SELECT private_key FROM users_new WHERE username=:name");
+    $check->bindParam(':name', $_SESSION['username']);
+    $result = $check->execute();
+
+    $private_key = "";
+    while ($row = $check->fetch()) {
+        $private_key = $row['private_key'];
+    }
+
+    $private_key = decrypt_private_key($private_key, $_SESSION['username']);
+    openssl_sign($data, $signature, $private_key);
+    return base64_encode($signature);
+}
+
+// verify digital signature
+function verify_signature($data, $signature, $public_key)
+{
+    $result = openssl_verify($data, base64_decode($signature), $public_key);
+    return $result;
 }

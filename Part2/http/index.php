@@ -34,7 +34,6 @@
 
   <div class="container">
     <?php
-
     if (check_loged_in()) {
       print('<p>Loged in user:' . $_SESSION['username']  . '</p>');
       print ' <form name="logout" class="form-horizontal" action="include/actions.php" method="post"><button style="width:100%" name="logout" type="submit">Logout</button>';
@@ -42,18 +41,50 @@
       print ' </form>';
       print ' <br>';
 
-      print '   <form name="export-public-key" class="form-horizontal" action="include/actions.php" method="post"><button style="width:100%" name="export-public-key" type="submit">Export Public Key</button>';
-      print '   <input name="csrf_token" type="hidden" value="' . $_SESSION['csrf_token'] . '">';
-      print '   </form>';
+      print ' <form name="export-public-key" class="form-horizontal" action="include/actions.php" method="post"><button style="width:100%" name="export-public-key" type="submit">Export Public Key</button>';
+      print ' <input name="csrf_token" type="hidden" value="' . $_SESSION['csrf_token'] . '">';
+      print ' </form>';
       print ' <br>';
 
-      print '   <form name="export-public-key" class="form-horizontal" action="include/actions.php" method="post">';
-      print '   <textarea style="width:100%" name="input-text" id="input-text" maxlength="10000"></textarea>';
+      print ' <form name="sign-text" class="form-horizontal" action="include/actions.php" method="post">';
+      print ' <textarea style="width:100%" name="input-text" id="input-text" maxlength="10000"></textarea>';
+      print ' <div>';
+      print '   <button style="margin-top: 10px; width:100%" name="sign-text" type="submit">Sign Text</button>';
+      print ' </div>';
+      print ' <input name="csrf_token" type="hidden" value="' . $_SESSION['csrf_token'] . '">';
+      print ' </form>';
+      if (isset($_GET['error'])) {
+        if ($_GET['error'] == 'texttoolong') {
+          print '<p>Text should be maximum 10000 characters</p>';
+        }
+      }
+      print ' <br>';
+
+      print ' <form name="verify-signature" class="form-horizontal" action="include/actions.php" method="post" enctype="multipart/form-data">';
+      print '   <textarea placeholder="Input message here" style="width:100%" name="input-text" id="input-text" maxlength="10000"></textarea>';
+      print '   <input placeholder="Input signature here" style="width:70%; margin-top: 10px;" name="signature" id="signature">';
+      print '   <div style="margin-top: 10px;">';
+      print '     <label>Upload Public Key File</label>';
+      print '     <input type="file" name="public-key" id="public-key">';
+      print '   </div>';
       print '   <div>';
-      print '     <button style="margin-top: 10px; width:100%" name="sign-text" type="submit">Sign Text</button>';
+      print '     <button style="margin-top: 10px; width:100%" name="verify-signature" type="submit">Verify Signature</button>';
       print '   </div>';
       print '   <input name="csrf_token" type="hidden" value="' . $_SESSION['csrf_token'] . '">';
-      print '   </form>';
+      print ' </form>';
+      if (isset($_GET['error'])) {
+        if ($_GET['error'] == 'texttoolong') {
+          print '<p>Text should be maximum 10000 characters</p>';
+        }
+      }
+      if (isset($_GET['verify-signature'])) {
+        if ($_GET['verify-signature'] == 'success') {
+          print '<script>alert("Signature verification: Success");</script>';
+        }
+        if ($_GET['verify-signature'] == 'fail') {
+          print '<script>alert("Signature verification: Fail");</script>';
+        }
+      }
       print ' <br>';
     } else {
       create_csrf_token();
@@ -81,6 +112,15 @@
       print '    </div>';
       print '  </fieldset> <input name="csrf_token" type="hidden" value="' . $_SESSION['csrf_token'] . '">';
       print '</form>';
+      if (isset($_GET['error'])) {
+        if ($_GET['error'] == 'emptyfields') {
+          print '<p class="error">Fill in all fields!</p>';
+        } else if ($_GET['error'] == 'usertaken') {
+          print '<p class="error">User name is already taken!</p>';
+        } else if ($_GET['error'] == 'wrongcredentials') {
+          print '<p class="error">Wrong credentials!</p>';
+        }
+      }
     }
     ?>
   </div>

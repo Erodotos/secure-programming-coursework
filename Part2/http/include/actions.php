@@ -3,6 +3,8 @@
 require_once("base.php");
 require_once('my_functions.php');
 
+validate_csrf_token();
+
 // check if the request came from a valid form submission
 if (isset($_POST["signup"])) {
 	$username = $_POST["username"];
@@ -53,6 +55,54 @@ if (isset($_POST["signup"])) {
 	header("Cache-Control: no-store, no-cache");
 	header('Content-Disposition: attachment; filename="key.pem"');
 	echo export_public_key();
+	exit();
+} else if (isset($_POST["sign-text"])) {
+	$text = $_POST["input-text"];
+	// check if length of text is not too long
+	if (strlen($text) > 10000) {
+		header("Location: ../index.php?error=texttoolong");
+		exit();
+	}
+	$text = validate($text);
+
+	$signature = sign_text($text);
+	header("Cache-Control: no-store, no-cache");
+	header('Content-Disposition: attachment; filename="signature.txt"');
+	echo $signature;
+	exit();
+} else if (isset($_POST["verify-signature"])) {
+	$text = $_POST["input-text"];
+
+	if (strlen($text) > 10000) {
+		header("Location: ../index.php?error=texttoolong");
+		exit();
+	}
+
+	$text = validate($text);
+
+	$signature = $_POST["signature"];
+
+
+	$filename = $_FILES["public-key"]["name"];
+	$fileEXT = explode(".", $filename);
+	$fileEXT = strtolower(end($fileEXT));
+	$allowed = array("pem");
+
+	if (in_array($fileEXT, $allowed)) {
+		$public_key = file_get_contents($_FILES["public-key"]["tmp_name"]);
+		$public_key = openssl_pkey_get_public($public_key);
+		$result = verify_signature($text, $signature, $public_key);
+		echo $result;
+		if ($result == true) {
+			header("Location: ../index.php?verify-signature=success");
+		} else {
+			header("Location: ../index.php?verify-signature=fail");
+		}
+	} else {
+		header("Location: ../index.php?verify-signature=fail");
+	}
+
+	exit();
 } else {
 	// redirect to login page
 	header("Location: index.php");
