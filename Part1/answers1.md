@@ -52,8 +52,8 @@ Software vulnerabilities can be more easily exploited since the attackers know t
 From an economic point of view, resolving hardware vulnerabilities requires replacing the hardware with a financial overhead. In some cases,  like smartphone hardware, manufacturers won't bother fixing the phones because people buy new phones very frequently. Besides that, securing hardware comes with performance tradeoffs. For instance, if a cloud provider fixes its servers might face performance issues that will cost millions of dollars to the company.
 
 *Examples:*
-- Hardware vulnerability: CVE-2020-8694  https://nvd.nist.gov/vuln/detail/CVE-2020-8694
-- Software vulnerability:CVE-2021-41817 https://nvd.nist.gov/vuln/detail/CVE-2021-41817
+- Hardware vulnerability: [CVE-2020-8694](https://nvd.nist.gov/vuln/detail/CVE-2020-8694)
+- Software vulnerability: [CVE-2022-0847](https://nvd.nist.gov/vuln/detail/CVE-2022-0847)
 
 **Question 6**
 
