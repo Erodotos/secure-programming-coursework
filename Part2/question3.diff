@@ -1,0 +1,29 @@
+*** ./t1_lib.c	2022-03-13 20:15:50.996997416 +0000
+--- ../../original_openssl/ssl/t1_lib.c	2022-03-13 19:22:23.823979468 +0000
+***************
+*** 2563,2571 ****
+  	n2s(p, payload);
+  	pl = p;
+  
+- 	if (1 + 2 + payload + 16 > s->s3->rrec.length)
+- 		return 0;
+- 
+  	if (s->msg_callback)
+  		s->msg_callback(0, s->version, TLS1_RT_HEARTBEAT,
+  			&s->s3->rrec.data[0], s->s3->rrec.length,
+--- 2563,2568 ----
+
+*** ./d1_both.c	2022-03-13 20:15:51.003665645 +0000
+--- ../../original_openssl/ssl/d1_both.c	2022-03-13 19:22:23.833979467 +0000
+***************
+*** 1464,1472 ****
+  	n2s(p, payload);
+  	pl = p;
+  
+- 	if (1 + 2 + payload + 16 > s->s3->rrec.length)
+- 		return 0;
+- 
+  	if (s->msg_callback)
+  		s->msg_callback(0, s->version, TLS1_RT_HEARTBEAT,
+  			&s->s3->rrec.data[0], s->s3->rrec.length,
+--- 1464,1469 ----
